@@ -3,7 +3,7 @@ import { Category, CategoryObject } from "../types/category";
 /**
  * Categorizes each object into its own category.
  */
-const identityCategory = (objects: CategoryObject[]): Category[] => {
+const getCategoriesIdentity = (objects: CategoryObject[]): Category[] => {
   const categoriesMap: Record<string, Category> = {};
 
   objects.forEach((obj) => {
@@ -20,7 +20,7 @@ const identityCategory = (objects: CategoryObject[]): Category[] => {
 /**
  * Categorizes objects using AI.
  */
-const aiCategory = (objects: CategoryObject[]): Category[] => {
+const getCategoriesAI = (objects: CategoryObject[]): Category[] => {
   // AI categorization logic goes here
   return [];
 };
@@ -34,9 +34,9 @@ export const getCategories = async (
 ): Promise<Category[]> => {
   switch (strategy) {
     case "identity":
-      return identityCategory(objects);
+      return getCategoriesIdentity(objects);
     case "ai":
-      return aiCategory(objects);
+      return getCategoriesAI(objects);
     default:
       throw new Error("Invalid strategy");
   }
