@@ -8,7 +8,11 @@ import {
   List,
   ListItem,
 } from "@chakra-ui/react";
-import { getCategories, AIStyle } from "./logic/get-categories";
+import {
+  getCategories,
+  AIStyle,
+  AICategoryOptions,
+} from "./logic/get-categories";
 import { Category } from "./types/category";
 
 function App() {
@@ -21,16 +25,22 @@ function App() {
   const [categoryHint, setCategoryHint] = useState("");
   const [categoriesInput, setCategoriesInput] = useState("");
   const [excludeCategoriesInput, setExcludeCategoriesInput] = useState("");
+  const [classHint, setClassHint] = useState("");
 
   const handleCategorize = async () => {
     setLoading(true);
-    const options = {
+    const options: AICategoryOptions = {
       style,
       categoryHint: categoryHint || undefined,
-      categories: categoriesInput ? categoriesInput.split(",").map((c) => c.trim()) : undefined,
-      excludeCatories: excludeCategoriesInput ? excludeCategoriesInput.split(",").map((c) => c.trim()) : undefined,
+      categories: categoriesInput
+        ? categoriesInput.split(",").map((c) => c.trim())
+        : undefined,
+      excludeCatories: excludeCategoriesInput
+        ? excludeCategoriesInput.split(",").map((c) => c.trim())
+        : undefined,
+      classHint: classHint ?? undefined,
     };
-    const objects = input.split(",").map((obj) => obj.trim());
+    const objects = input.split("\n").map((obj) => obj.trim());
     const result = await getCategories(objects, "ai", options);
     setCategories(result);
     setLoading(false);
@@ -41,14 +51,22 @@ function App() {
       <Textarea
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="Enter objects separated by commas"
+        placeholder="Enter objects separated by newlines"
         size="md"
       />
       <Button onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}>
-        {showAdvancedOptions ? "Hide Advanced Options" : "Show Advanced Options"}
+        {showAdvancedOptions
+          ? "Hide Advanced Options"
+          : "Show Advanced Options"}
       </Button>
       {showAdvancedOptions && (
         <>
+          <Textarea
+            value={classHint}
+            onChange={(e) => setClassHint(e.target.value)}
+            placeholder="Enter a class hint"
+            size="md"
+          />
           <Textarea
             value={categoryHint}
             onChange={(e) => setCategoryHint(e.target.value)}
@@ -69,7 +87,11 @@ function App() {
           />
           <Button
             colorScheme={style === AIStyle.funny ? "orange" : "teal"}
-            onClick={() => setStyle(style === AIStyle.funny ? AIStyle.serious : AIStyle.funny)}
+            onClick={() =>
+              setStyle(
+                style === AIStyle.funny ? AIStyle.serious : AIStyle.funny
+              )
+            }
           >
             Toggle Style: {style === AIStyle.funny ? "Funny" : "Serious"}
           </Button>
