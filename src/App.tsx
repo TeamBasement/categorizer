@@ -1,6 +1,13 @@
-import "./App.css";
-import React, { useState } from "react";
-import { Box, Button, Input, Textarea, VStack, Heading, List, ListItem } from "@chakra-ui/react";
+import { useState } from "react";
+import {
+  Box,
+  Button,
+  Textarea,
+  VStack,
+  Heading,
+  List,
+  ListItem,
+} from "@chakra-ui/react";
 import { getCategories } from "./logic/get-categories";
 import { Category } from "./types/category";
 
@@ -27,7 +34,13 @@ function App() {
       </Button>
       <Box w="100%">
         {categories.map((category) => (
-          <Box key={category.name} p={4} borderWidth={1} borderRadius="md" mb={4}>
+          <Box
+            key={category.name}
+            p={4}
+            borderWidth={1}
+            borderRadius="md"
+            mb={4}
+          >
             <Heading size="md">{category.name}</Heading>
             <List spacing={2}>
               {category.objects.map((obj) => (
