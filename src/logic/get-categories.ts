@@ -44,9 +44,28 @@ const getCategoriesAI = async (
   objects: CategoryObject[],
   options: AICategoryOptions
 ): Promise<Category[]> => {
+  let prompt = `You are helping to categorize objects. Assign each object to a category.`;
+
+  if (options.style === AIStyle.funny) {
+    prompt += " Make it funny!";
+  }
+
+  if (options.categoryHint) {
+    prompt += ` Hint: ${options.categoryHint}.`;
+  }
+
+  if (options.categories) {
+    prompt += ` Use these categories if possible: ${options.categories.join(", ")}.`;
+  }
+
+  if (options.excludeCatories) {
+    prompt += ` Avoid these categories: ${options.excludeCatories.join(", ")}.`;
+  }
+
+  prompt += ` Use the following json response: {"categories" [{name: 'CATEGORY_NAME', objects: ['OBJECT1', 'OBJECT2'...]}]}`;
+
   const response = await getResponse<{ categories: Category[] }>(
-    `You are helping to categorize objects. Assign each object to a category. 
-Use the following json response: {"categories" [{name: 'CATEGORY_NAME', objects: ['OBJECT1', 'OBJECT2'...]}]Python, JavaScript, Java, C#, C++, Ruby, Go, Rust, Swift, Kotlin, TypeScript, PHP, Dart, R, MATLAB, Scala, Haskell, Lua, Perl, Julia}`,
+    prompt,
     objects.join("\n")
   );
 
