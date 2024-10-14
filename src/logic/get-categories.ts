@@ -6,5 +6,15 @@ import { Category, CategoryObject } from "../types/category";
 export const getCategories = async (
   objects: CategoryObject
 ): Promise<Category[]> => {
-  return [];
+  const categoriesMap: Record<string, Category> = {};
+
+  objects.forEach((obj) => {
+    if (!categoriesMap[obj]) {
+      categoriesMap[obj] = { name: obj, objects: [obj] };
+    } else {
+      categoriesMap[obj].objects.push(obj);
+    }
+  });
+
+  return Object.values(categoriesMap);
 };
