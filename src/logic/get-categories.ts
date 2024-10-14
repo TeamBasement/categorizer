@@ -1,4 +1,5 @@
 import { Category, CategoryObject } from "../types/category";
+import { Configuration, OpenAIApi } from "openai";
 
 /**
  * Categorizes each object into its own category.
@@ -20,9 +21,33 @@ const getCategoriesIdentity = (objects: CategoryObject[]): Category[] => {
 /**
  * Categorizes objects using AI.
  */
-const getCategoriesAI = (objects: CategoryObject[]): Category[] => {
-  // AI categorization logic goes here
-  return [];
+const getCategoriesAI = async (objects: CategoryObject[]): Promise<Category[]> => {
+  const configuration = new Configuration({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+  const openai = new OpenAIApi(configuration);
+
+  const prompt = `Categorize the following objects into groups: ${JSON.stringify(objects)}`;
+
+  try {
+    const response = await openai.createCompletion({
+      model: "text-davinci-003",
+      prompt: prompt,
+      max_tokens: 150,
+      temperature: 0.5,
+    });
+
+    const categoriesJson = response.data.choices[0].text?.trim();
+    if (!categoriesJson) {
+      throw new Error("Failed to get a valid response from OpenAI");
+    }
+
+    const categories: Category[] = JSON.parse(categoriesJson);
+    return categories;
+  } catch (error) {
+    console.error("Error categorizing objects with AI:", error);
+    throw error;
+  }
 };
 
 /**
