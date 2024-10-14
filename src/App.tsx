@@ -1,5 +1,6 @@
 import "./App.css";
 import React, { useState } from "react";
+import { Box, Button, Input, Textarea, VStack, Heading, List, ListItem } from "@chakra-ui/react";
 import { getCategories } from "./logic/get-categories";
 import { Category } from "./types/category";
 
@@ -14,26 +15,29 @@ function App() {
   };
 
   return (
-    <div>
-      <textarea
+    <VStack spacing={4} p={4}>
+      <Textarea
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder="Enter objects separated by commas"
+        size="md"
       />
-      <button onClick={handleCategorize}>Get Categories</button>
-      <div>
+      <Button colorScheme="teal" onClick={handleCategorize}>
+        Get Categories
+      </Button>
+      <Box w="100%">
         {categories.map((category) => (
-          <div key={category.name}>
-            <h3>{category.name}</h3>
-            <ul>
+          <Box key={category.name} p={4} borderWidth={1} borderRadius="md" mb={4}>
+            <Heading size="md">{category.name}</Heading>
+            <List spacing={2}>
               {category.objects.map((obj) => (
-                <li key={obj}>{obj}</li>
+                <ListItem key={obj}>{obj}</ListItem>
               ))}
-            </ul>
-          </div>
+            </List>
+          </Box>
         ))}
-      </div>
-    </div>
+      </Box>
+    </VStack>
   );
 }
 
