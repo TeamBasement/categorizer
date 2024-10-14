@@ -15,8 +15,7 @@ function App() {
 
   return (
     <div>
-      <input
-        type="text"
+      <textarea
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder="Enter objects separated by commas"
