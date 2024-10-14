@@ -1,6 +1,25 @@
 import { Category, CategoryObject } from "../types/category";
 import { getResponse } from "./ai";
 
+enum AIStyle {
+  "serious",
+  "funny",
+}
+
+interface AICategoryOptions {
+  /** The style for the responses. */
+  style?: AIStyle;
+
+  /** A hint for the types of categories that should be generated. */
+  categoryHint?: string;
+
+  /** Explicit categories that should be used. */
+  categories?: string[];
+
+  /** Exclude generation of specific categories. Useful for trigger a new category. */
+  excludeCatories?: string[];
+}
+
 /**
  * Categorizes each object into its own category.
  */
@@ -22,11 +41,12 @@ const getCategoriesIdentity = (objects: CategoryObject[]): Category[] => {
  * Categorizes objects using AI.
  */
 const getCategoriesAI = async (
-  objects: CategoryObject[]
+  objects: CategoryObject[],
+  options: AICategoryOptions
 ): Promise<Category[]> => {
   const response = await getResponse<{ categories: Category[] }>(
-    `You are helping to categorize objects. Assign each object to a category. There must be at least two categories. For example, programming languages could be compiled vs interpreted.
-    Use the following json response: {"categories" [{name: 'CATEGORY_NAME', objects: ['OBJECT1', 'OBJECT2'...]}]Python, JavaScript, Java, C#, C++, Ruby, Go, Rust, Swift, Kotlin, TypeScript, PHP, Dart, R, MATLAB, Scala, Haskell, Lua, Perl, Julia}`,
+    `You are helping to categorize objects. Assign each object to a category. 
+Use the following json response: {"categories" [{name: 'CATEGORY_NAME', objects: ['OBJECT1', 'OBJECT2'...]}]Python, JavaScript, Java, C#, C++, Ruby, Go, Rust, Swift, Kotlin, TypeScript, PHP, Dart, R, MATLAB, Scala, Haskell, Lua, Perl, Julia}`,
     objects.join("\n")
   );
 
