@@ -1,12 +1,12 @@
 import { Category, CategoryObject } from "../types/category";
 import { getResponse } from "./ai";
 
-enum AIStyle {
+export enum AIStyle {
   "serious",
   "funny",
 }
 
-interface AICategoryOptions {
+export interface AICategoryOptions {
   /** The style for the responses. */
   style?: AIStyle;
 
@@ -42,23 +42,25 @@ const getCategoriesIdentity = (objects: CategoryObject[]): Category[] => {
  */
 const getCategoriesAI = async (
   objects: CategoryObject[],
-  options: AICategoryOptions
+  options?: AICategoryOptions
 ): Promise<Category[]> => {
   let prompt = `You are helping to categorize objects. Assign each object to a category.`;
 
-  if (options.style === AIStyle.funny) {
+  if (options?.style === AIStyle.funny) {
     prompt += " Make it funny!";
   }
 
-  if (options.categoryHint) {
+  if (options?.categoryHint) {
     prompt += ` Hint: ${options.categoryHint}.`;
   }
 
-  if (options.categories) {
-    prompt += ` Use these categories if possible: ${options.categories.join(", ")}.`;
+  if (options?.categories) {
+    prompt += ` Use these categories if possible: ${options.categories.join(
+      ", "
+    )}.`;
   }
 
-  if (options.excludeCatories) {
+  if (options?.excludeCatories) {
     prompt += ` Avoid these categories: ${options.excludeCatories.join(", ")}.`;
   }
 
@@ -77,13 +79,14 @@ const getCategoriesAI = async (
  */
 export const getCategories = async (
   objects: CategoryObject[],
-  strategy: "identity" | "ai"
+  strategy: "identity" | "ai",
+  options?: AICategoryOptions
 ): Promise<Category[]> => {
   switch (strategy) {
     case "identity":
       return getCategoriesIdentity(objects);
     case "ai":
-      return getCategoriesAI(objects);
+      return getCategoriesAI(objects, options);
     default:
       throw new Error("Invalid strategy");
   }
